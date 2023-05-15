@@ -1,9 +1,7 @@
 package com.proit.todo.app.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,6 +10,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString
 public class Todo {
     @Id
@@ -23,5 +22,6 @@ public class Todo {
     private String status;
 
     @ManyToOne
+    @JsonBackReference
     private Category category;
 }

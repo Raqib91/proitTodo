@@ -1,9 +1,8 @@
 package com.proit.todo.app.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.proit.todo.app.utils.Constants;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,18 +11,20 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @ToString
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String title;
+    private String title = Constants.DEFAULT_CATEGORY;
 
     @OneToMany(
             mappedBy = "category",
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
+    @JsonManagedReference
     private List<Todo> todoList;
 }
