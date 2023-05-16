@@ -1,12 +1,15 @@
-package com.proit.todo.app.controllers;
+package com.proit.todo.app.backend.controllers;
 
-import com.proit.todo.app.entities.Category;
-import com.proit.todo.app.services.CategoryService;
+import com.proit.todo.app.backend.entities.Category;
+import com.proit.todo.app.backend.services.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author raqib91
+ */
 @RestController
 @RequestMapping(path = "/categories")
 @CrossOrigin(origins = "*")

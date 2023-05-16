@@ -1,18 +1,34 @@
-package com.proit.todo.app.services.impls;
+package com.proit.todo.app.backend.services.impls;
 
-import com.proit.todo.app.entities.Category;
-import com.proit.todo.app.repositories.CategoryRepository;
-import com.proit.todo.app.services.CategoryService;
+import com.proit.todo.app.backend.entities.Category;
+import com.proit.todo.app.backend.repositories.CategoryRepository;
+import com.proit.todo.app.backend.services.CategoryService;
+import com.proit.todo.app.backend.utils.Constants;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author raqib91
+ */
 @Service
+@Getter
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+
+    private Category defaultCategory;
+
+    @PostConstruct
+    private void init() {
+        defaultCategory = getByTitle(Constants.DEFAULT_CATEGORY_TITLE);
+        if (defaultCategory == null)
+            defaultCategory = createOrUpdate(new Category());
+    }
 
     @Override
     public Category createOrUpdate(Category category) {

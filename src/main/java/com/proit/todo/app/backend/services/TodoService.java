@@ -1,9 +1,12 @@
-package com.proit.todo.app.services;
+package com.proit.todo.app.backend.services;
 
-import com.proit.todo.app.entities.Todo;
+import com.proit.todo.app.backend.entities.Todo;
 
 import java.util.List;
 
+/**
+ * @author raqib91
+ */
 public interface TodoService {
     void createOrUpdate(Todo todo);
 

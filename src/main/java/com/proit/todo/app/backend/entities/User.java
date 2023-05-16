@@ -1,4 +1,4 @@
-package com.proit.todo.app.entities;
+package com.proit.todo.app.backend.entities;
 
 import lombok.*;
 
@@ -7,12 +7,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * @author raqib91
+ */
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Setter
+@Getter
 @ToString
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

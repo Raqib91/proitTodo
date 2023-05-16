@@ -1,26 +1,28 @@
-package com.proit.todo.app.services.impls;
+package com.proit.todo.app.backend.services.impls;
 
-import com.proit.todo.app.entities.Category;
-import com.proit.todo.app.entities.Todo;
-import com.proit.todo.app.repositories.TodoRepository;
-import com.proit.todo.app.services.TodoService;
-import com.proit.todo.app.utils.AppUtil;
+import com.proit.todo.app.backend.entities.Todo;
+import com.proit.todo.app.backend.repositories.TodoRepository;
+import com.proit.todo.app.backend.services.CategoryService;
+import com.proit.todo.app.backend.services.TodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author raqib91
+ */
 @Service
 @RequiredArgsConstructor
 public class TodoServiceImpl implements TodoService {
     private final TodoRepository todoRepository;
+    private final CategoryService categoryService;
 
     @Override
     public void createOrUpdate(Todo todo) {
-        Category category = todo.getCategory();
-        if (category == null)
-            todo.setCategory(AppUtil.defaultCategory);
+        if (todo.getCategory() == null)
+            todo.setCategory(categoryService.getDefaultCategory());
         todoRepository.save(todo);
     }
 

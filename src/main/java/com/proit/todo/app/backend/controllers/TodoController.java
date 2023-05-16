@@ -1,12 +1,15 @@
-package com.proit.todo.app.controllers;
+package com.proit.todo.app.backend.controllers;
 
-import com.proit.todo.app.entities.Todo;
-import com.proit.todo.app.services.TodoService;
+import com.proit.todo.app.backend.entities.Todo;
+import com.proit.todo.app.backend.services.TodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author raqib91
+ */
 @RestController
 @RequestMapping(path = "/todos")
 @CrossOrigin(origins = "*")

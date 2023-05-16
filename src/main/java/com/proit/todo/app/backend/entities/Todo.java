@@ -1,4 +1,4 @@
-package com.proit.todo.app.entities;
+package com.proit.todo.app.backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
@@ -6,12 +6,16 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * @author raqib91
+ */
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Setter
+@Getter
 @ToString
+@Builder
 public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
