@@ -8,7 +8,7 @@ import java.util.List;
  * @author raqib91
  */
 public interface TodoService {
-    void createOrUpdate(Todo todo);
+    Todo createOrModify(Todo todo);
 
     Todo getById(long id);
 

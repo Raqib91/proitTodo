@@ -16,7 +16,6 @@ import javax.persistence.Id;
 @Setter
 @Getter
 @ToString
-@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,4 +23,6 @@ public class User {
 
     private String username;
     private String password;
+
+    private String role;
 }
