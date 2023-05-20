@@ -25,8 +25,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .csrf().disable()
-                .cors().disable()
                 .authorizeRequests()
                 .antMatchers("/users/**").permitAll()
                 .anyRequest()
@@ -38,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserDetailService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(customUserDetailService);
     }
 
     @Bean
