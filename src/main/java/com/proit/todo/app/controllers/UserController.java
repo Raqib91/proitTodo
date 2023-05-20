@@ -1,14 +1,61 @@
 package com.proit.todo.app.controllers;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.proit.todo.app.entities.User;
+import com.proit.todo.app.exceptions.ResourceNotModifiedException;
+import com.proit.todo.app.models.JwtRequest;
+import com.proit.todo.app.models.JwtResponse;
+import com.proit.todo.app.models.UserDTO;
+import com.proit.todo.app.security.JwtUtil;
+import com.proit.todo.app.services.UserService;
+import com.proit.todo.app.utils.ApiResponseUtil;
+import com.proit.todo.app.utils.OperationType;
+import com.proit.todo.app.utils.ResourceType;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author raqib91
  */
 @RestController
-@RequestMapping(path = "/users")
 @CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping(path = "/users")
+@RequiredArgsConstructor
+@Slf4j
 public class UserController {
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
+
+    @PostMapping(path = "/register")
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
+        User user = userService.create(userDTO);
+        if (user == null)
+            throw new ResourceNotModifiedException(OperationType.CREATE.name(), ResourceType.USER.name(), null, 0);
+        return new ResponseEntity<>(ApiResponseUtil.buildResponse("USER CREATED", true), HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "/login")
+    public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) {
+        log.info("Request for token");
+        try {
+            authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(),
+                            jwtRequest.getPassword()));
+        } catch (Exception e) {
+            throw new RuntimeException("USERNAME OR PASSWORD IS WRONG");
+        }
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getUsername());
+        String token = jwtUtil.generateToken(userDetails);
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
 }

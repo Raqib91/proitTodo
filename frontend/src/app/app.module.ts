@@ -1,18 +1,33 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { HomeComponent } from './components/home/home.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { AuthGuard } from './guards/auth.guard';
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { RequestInterceptor } from './interceptors/request.interceptor';
+// import { AuthInterceptor } from './guards/auth.interceptor';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
+    RegisterComponent,
+    HomeComponent,
+    SidebarComponent,
+    NavBarComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
+  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
+  providers: [
+    AuthGuard,
+    [{ provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true }],
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

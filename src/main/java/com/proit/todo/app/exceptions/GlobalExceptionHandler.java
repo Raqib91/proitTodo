@@ -1,6 +1,6 @@
 package com.proit.todo.app.exceptions;
 
-import com.proit.todo.app.entities.ApiResponse;
+import com.proit.todo.app.models.ApiResponse;
 import com.proit.todo.app.utils.ApiResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

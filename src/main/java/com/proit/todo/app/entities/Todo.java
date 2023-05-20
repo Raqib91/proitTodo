@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Setter
 @Getter
+@Builder
 @ToString
 public class Todo {
     @Id
@@ -21,10 +22,13 @@ public class Todo {
     private long id;
 
     private String title;
+    private String description;
     private Date deadline;
+
+    @Transient
     private String status;
 
     @ManyToOne
     @JsonBackReference
-    private Category category;
+    private User user;
 }
