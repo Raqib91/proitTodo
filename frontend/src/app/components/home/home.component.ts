@@ -9,7 +9,9 @@ import { HomeService } from 'src/app/services/home.service';
 export class HomeComponent {
   constructor(private homeService: HomeService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.fetchTodos();
+  }
 
   fetchTodos() {
     this.homeService.getTodos().subscribe(
