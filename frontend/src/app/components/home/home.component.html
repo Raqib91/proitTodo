@@ -8,11 +8,11 @@
       <div class="col-md-3"></div>
       <div class="col-md-6">
         <table>
-          <tr>
+          <tr *ngFor="let todo of todoList">
             <div class="card">
               <div class="card-body">
                 <div class="left">
-                  <h2>Hello there</h2>
+                  <h2>{{ todo.title }}</h2>
                 </div>
                 <div class="right">
                   <span class="badge badge-warning">Pending</span>
@@ -20,11 +20,21 @@
               </div>
               <div class="card-footer">
                 <div class="left">
-                  <i class="fa fa-fw fa-calendar"></i> Deadline
+                  <i class="fa fa-fw fa-calendar"></i> {{ todo.deadline }}
                 </div>
                 <div class="right">
-                  <button type="button" class="btn btn-danger"><i class="fa fa-fw fa-trash"></i> Delete</button>
-                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#todoModal"><i class="fa fa-fw fa-edit"></i> Edit</button>
+                  <button type="button" class="btn btn-danger">
+                    <i class="fa fa-fw fa-trash"></i> Delete
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-info"
+                    data-toggle="modal"
+                    data-target="#editTodoModal"
+                    (click)="editTodo(todo.id)"
+                  >
+                    <i class="fa fa-fw fa-edit"></i> Edit
+                  </button>
                 </div>
               </div>
             </div>
@@ -33,20 +43,18 @@
       </div>
       <div class="col-md-3"></div>
     </div>
+    <br /><br /><br />
   </div>
 
   <!-- User Modal -->
   <div class="modal fade" id="userModal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-
         <form id="userForm">
-        <!-- Modal body -->
-        <div class="modal-body">
+          <!-- Modal body -->
+          <div class="modal-body">
             <div class="form-group">
-              <label for="firstName"
-                >First Name:</label
-              >
+              <label for="firstName">First Name:</label>
               <input
                 type="text"
                 class="form-control"
@@ -88,81 +96,165 @@
                 required
               />
             </div>
-        </div>
-        
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" form="userForm">Save</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </form>
-        
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" form="userForm">
+              Save
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 
-  <!-- Todo Modal -->
-  <div class="modal fade" id="todoModal">
+  <!-- Create Todo Modal -->
+  <div class="modal fade" id="createTodoModal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
+        <form [formGroup]="todoDetail">
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="title">Title<span class="rq">*</span>:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="title"
+                name="title"
+                formControlName="title"
+                placeholder="Enter todo title"
+                autocomplete="on"
+                required
+              />
+            </div>
 
-        <form id="todoForm">
+            <div class="form-group">
+              <label for="description">Description:</label>
+              <textarea
+                class="form-control"
+                name="description"
+                formControlName="description"
+                placeholder="Enter todo description"
+                id="description"
+                cols="30"
+                rows="3"
+                autocomplete="on"
+              ></textarea>
+            </div>
 
-        <!-- Modal body -->
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="title"
-              >Title<span class="rq">*</span>:</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="title"
-              name="title"
-              placeholder="Enter todo title"
-              autocomplete="on"
-              required
-            />
+            <div class="form-group">
+              <label for="deadline">Deadline<span class="rq">*</span>:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="deadline"
+                name="deadline"
+                formControlName="deadline"
+                placeholder="Enter todo deadline"
+                autocomplete="on"
+              />
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="description"
-              >Description:</label
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              data-dismiss="modal"
+              (click)="createTodo()"
             >
-            <input
-              type="text"
-              class="form-control"
-              id="description"
-              name="description"
-              placeholder="Enter todo description"
-              autocomplete="on"
-            />
+              Create
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Todo Modal -->
+  <div class="modal fade" id="editTodoModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form [formGroup]="todoDetail">
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="editTitle">Title<span class="rq">*</span>:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editTitle"
+                name="title"
+                formControlName="title"
+                autocomplete="on"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="editDescription">Description:</label>
+              <textarea
+                class="form-control"
+                name="description"
+                formControlName="description"
+                id="editDescription"
+                cols="30"
+                rows="3"
+                autocomplete="on"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="editDeadline"
+                >Deadline<span class="rq">*</span>:</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="editDeadline"
+                name="deadline"
+                formControlName="deadline"
+                autocomplete="on"
+              />
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="deadline"
-              >Deadline<span class="rq">*</span>:</label
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              data-dismiss="modal"
+              (click)="updateData()"
             >
-            <input
-              type="text"
-              class="form-control"
-              id="deadline"
-              name="deadline"
-              placeholder="Enter todo deadline"
-              autocomplete="on"
-              required
-            />
+              Update
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
           </div>
-        </div>
-        
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" form="todoForm">Save</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-
-      </form>
-        
+        </form>
       </div>
     </div>
   </div>

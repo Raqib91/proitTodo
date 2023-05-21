@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Todo } from '../models/todo';
 
 @Injectable({
   providedIn: 'root',
@@ -11,5 +12,17 @@ export class HomeService {
 
   getTodos() {
     return this.http.get<any>(`${this.url}/todos`);
+  }
+
+  getTodoById(id: number) {
+    return this.http.get<any>(`${this.url}/todos/` + id);
+  }
+
+  saveTodo(todo: Todo) {
+    return this.http.post(`${this.url}/todos`, todo);
+  }
+
+  updateTodo(todo: Todo) {
+    return this.http.put(`${this.url}/todos`, todo);
   }
 }

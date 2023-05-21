@@ -1,6 +1,6 @@
 import { NgModule, Component } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -12,7 +12,6 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { AuthGuard } from './guards/auth.guard';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { RequestInterceptor } from './interceptors/request.interceptor';
-// import { AuthInterceptor } from './guards/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -23,7 +22,13 @@ import { RequestInterceptor } from './interceptors/request.interceptor';
     SidebarComponent,
     NavBarComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+  ],
   providers: [
     AuthGuard,
     [{ provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true }],

@@ -1,39 +1,39 @@
 .sidebar {
-    float: left;
-    width: 25%;
-    height: 100%;
-    position: fixed;
-    border-right: 5px dashed green;
-    background-color: white;
-  }
-  
-  .sidebar-top {
-    height: 20%;
-  }
-  
-  .sidebar button {
-    width: 100%;
-    margin-bottom: 40px;
-    padding: 15px;
-    font-size: 15px;
-    font-weight: bold;
-    border: none;
-    border-radius: 30px;
-  }
-  
-  .sidebar button:hover {
-    font-size: 18px;
-  }
-  
-  #sidebar-btn0 {
-    color: white;
-    background-color: #7D53CC;
-  }
-  
-  #sidebar-btn1 {
-    background-color: #FFF080;
-  }
+  float: left;
+  width: 25%;
+  height: 100%;
+  position: fixed;
+  border-right: 5px dashed green;
+  background-color: white;
+}
 
-  #myModal {
-    z-index: 1000;
-  }
+.sidebar-top {
+  height: 20%;
+}
+
+.sidebar button {
+  width: 100%;
+  margin-bottom: 40px;
+  padding: 15px;
+  font-size: 15px;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+}
+
+.sidebar button:hover {
+  font-size: 18px;
+}
+
+#sidebar-btn0 {
+  color: white;
+  background-color: #7d53cc;
+}
+
+#sidebar-btn1 {
+  background-color: #fff080;
+}
+
+#myModal {
+  z-index: 1000;
+}

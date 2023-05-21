@@ -33,6 +33,7 @@ public class TodoController {
     @PostMapping
     public ResponseEntity<ApiResponse> createTodo(@RequestHeader(name = "Token") String token,
                                                   @RequestBody TodoDTO todoDTO) {
+        log.info("TODO RECEIVED: {}", todoDTO);
         Todo newTodo = todoService.create(jwtUtil.extractUsername(token), todoDTO);
         if (newTodo == null)
             throw new ResourceNotModifiedException(OperationType.CREATE.name(), ResourceType.TODO.name(), null, 0);
@@ -56,6 +57,12 @@ public class TodoController {
         if (todoList == null || todoList.isEmpty())
             throw new ResourceNotFoundException(ResourceType.TODO.name(), null, 0L);
         return ResponseEntity.ok(todoList);
+    }
+
+    @GetMapping(path = "/{id}")
+    public Todo getTodoById(@RequestHeader(name = "Token") String token,
+                            @PathVariable(name = "id") long id) {
+        return todoService.getById(id);
     }
 
     @DeleteMapping
