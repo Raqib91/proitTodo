@@ -33,3 +33,7 @@
   #sidebar-btn1 {
     background-color: #FFF080;
   }
+
+  #myModal {
+    z-index: 1000;
+  }
