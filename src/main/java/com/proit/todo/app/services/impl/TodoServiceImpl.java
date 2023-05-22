@@ -3,17 +3,20 @@ package com.proit.todo.app.services.impl;
 import com.proit.todo.app.entities.Todo;
 import com.proit.todo.app.entities.User;
 import com.proit.todo.app.exceptions.ResourceNotFoundException;
+import com.proit.todo.app.exceptions.ResourceNotModifiedException;
 import com.proit.todo.app.models.TodoDTO;
 import com.proit.todo.app.repositories.TodoRepository;
 import com.proit.todo.app.services.TodoService;
 import com.proit.todo.app.services.UserService;
+import com.proit.todo.app.utils.Constants;
+import com.proit.todo.app.utils.OperationType;
 import com.proit.todo.app.utils.ResourceType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author raqib91
@@ -25,18 +28,16 @@ public class TodoServiceImpl implements TodoService {
     private final UserService userService;
 
     @Override
-    public Todo create(String username, TodoDTO todoDTO) {
-        User user = getUserByUsername(username);
-        if (user == null)
-            return null;
-
+    public Todo create(String token, TodoDTO todoDTO) {
+        User user = userService.getUserByToken(token);
         if (user.getTodoList() == null)
             user.setTodoList(new ArrayList<>());
 
         Todo todo = Todo.builder()
                 .title(todoDTO.getTitle())
                 .description(todoDTO.getDescription())
-                .deadline(todoDTO.getDeadline())
+                .deadline(todoDTO.getDeadline() == null ?
+                        new Date() : todoDTO.getDeadline())
                 .build();
 
         user.getTodoList().add(todo);
@@ -45,38 +46,57 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public Todo modify(String username, TodoDTO todoDTO) {
-        User user = getUserByUsername(username);
-        if (user == null || user.getTodoList() == null || user.getTodoList().isEmpty())
+    public Todo modify(String token, TodoDTO todoDTO) {
+        User user = userService.getUserByToken(token);
+        if (user.getTodoList() == null || user.getTodoList().isEmpty())
             return null;
 
-        Todo todo = getById(todoDTO.getId());
+        Todo todo = getById(token, todoDTO.getId());
         if (todo == null)
             return null;
-
         todo.setTitle(todoDTO.getTitle());
         todo.setDescription(todoDTO.getDescription());
-        todo.setDeadline(todoDTO.getDeadline());
+        todo.setDeadline(todoDTO.getDeadline() == null ?
+                new Date() : todoDTO.getDeadline());
         return todoRepository.save(todo);
     }
 
     @Override
-    public Todo getById(long id) {
-        Optional<Todo> todo = todoRepository.findById(id);
-        return todo.orElseThrow(() -> new ResourceNotFoundException(ResourceType.TODO.name(), "ID", id));
+    public Todo getById(String token, long id) {
+        User user = userService.getUserByToken(token);
+        if (user.getTodoList() == null || user.getTodoList().isEmpty())
+            throw new ResourceNotFoundException(ResourceType.TODO.name(), "ID", id);
+
+        return user.getTodoList().stream()
+                .filter(e -> e.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceType.TODO.name(), "ID", id));
     }
 
     @Override
-    public List<Todo> getAllByUsername(String username) {
-        return getUserByUsername(username).getTodoList();
+    public List<Todo> getAllByToken(String token) {
+        Date today = new Date();
+        List<Todo> todoList = userService.getUserByToken(token).getTodoList();
+        if (todoList != null && !todoList.isEmpty()) {
+            for (int i = 0; i < todoList.size(); i++) {
+                try {
+                    Todo todo = todoList.get(i);
+                    if (today.getTime() > (todo.getDeadline().getTime() + Constants.TWELVE_HOURS_IN_MILLIS)) {
+                        todo.setStatus(false);
+                        todoList.set(i, todo);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return todoList;
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(String token, long id) {
+        Todo todo = getById(token, id);
+        if (todo == null)
+            throw new ResourceNotModifiedException(OperationType.DELETE.name(), ResourceType.TODO.name(), null, 0L);
         todoRepository.deleteById(id);
-    }
-
-    private User getUserByUsername(String username) {
-        return userService.getByUserName(username);
     }
 }

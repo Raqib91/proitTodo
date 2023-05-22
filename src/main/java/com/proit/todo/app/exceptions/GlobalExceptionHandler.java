@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * @author raqib91
+ */
 @RestControllerAdvice
 @CrossOrigin(origins = "*")
 public class GlobalExceptionHandler {
@@ -19,5 +22,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ResourceNotModifiedException.class)
     public ResponseEntity<ApiResponse> handleResourceNotModifiedException(ResourceNotModifiedException exception) {
         return new ResponseEntity<>(ApiResponseUtil.buildResponse(exception.getMessage(), false), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = UserNotAuthorizedException.class)
+    public ResponseEntity<ApiResponse> handleUserNotAuthorizedException(UserNotAuthorizedException exception) {
+        return new ResponseEntity<>(ApiResponseUtil.buildResponse(exception.getMessage(), false), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = UserNotAuthenticatedException.class)
+    public ResponseEntity<ApiResponse> handleUserNotAuthenticatedException(UserNotAuthenticatedException exception) {
+        return new ResponseEntity<>(ApiResponseUtil.buildResponse(exception.getMessage(), false), HttpStatus.FORBIDDEN);
     }
 }

@@ -2,6 +2,7 @@ package com.proit.todo.app.controllers;
 
 import com.proit.todo.app.entities.User;
 import com.proit.todo.app.exceptions.ResourceNotModifiedException;
+import com.proit.todo.app.exceptions.UserNotAuthenticatedException;
 import com.proit.todo.app.models.JwtRequest;
 import com.proit.todo.app.models.JwtResponse;
 import com.proit.todo.app.models.UserDTO;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @CrossOrigin(origins = "*")
-//@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
 @Slf4j
@@ -45,13 +45,12 @@ public class UserController {
 
     @PostMapping(path = "/login")
     public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) {
-        log.info("Request for token");
         try {
             authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(),
                             jwtRequest.getPassword()));
         } catch (Exception e) {
-            throw new RuntimeException("USERNAME OR PASSWORD IS WRONG");
+            throw new UserNotAuthenticatedException();
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(jwtRequest.getUsername());

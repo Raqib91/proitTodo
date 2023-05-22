@@ -22,9 +22,8 @@ export class LoginComponent {
       this.credentials.username === '' ||
       this.credentials.password === ''
     ) {
-      console.log('Enter valid username or password');
+      alert('Enter valid username or password');
     } else {
-      console.log('Form submitted');
       this.loginService.generateToken(this.credentials).subscribe(
         (response: any) => {
           console.log(response);
@@ -32,7 +31,11 @@ export class LoginComponent {
           this.router.navigate(['home']);
         },
         (error) => {
-          alert('INVALID USERNAME OR PASSWORD');
+          if (error.status === 403) {
+            alert('Authenticated failed. Invalid username or password');
+          } else {
+            alert('Backend server is offline');
+          }
         }
       );
     }

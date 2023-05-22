@@ -25,4 +25,8 @@ export class HomeService {
   updateTodo(todo: Todo) {
     return this.http.put(`${this.url}/todos`, todo);
   }
+
+  deleteTodoById(id: number) {
+    return this.http.delete(`${this.url}/todos/` + id);
+  }
 }

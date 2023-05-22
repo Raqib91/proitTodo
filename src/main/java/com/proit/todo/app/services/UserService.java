@@ -12,4 +12,6 @@ public interface UserService {
     void modify(User user);
 
     User getByUserName(String username);
+
+    User getUserByToken(String token);
 }

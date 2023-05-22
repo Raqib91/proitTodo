@@ -7,7 +7,8 @@
     <div class="row">
       <div class="col-md-3"></div>
       <div class="col-md-6">
-        <table>
+        <h1 *ngIf="noTodo">No todo to show</h1>
+        <table *ngIf="!noTodo">
           <tr *ngFor="let todo of todoList">
             <div class="card">
               <div class="card-body">
@@ -15,15 +16,25 @@
                   <h2>{{ todo.title }}</h2>
                 </div>
                 <div class="right">
-                  <span class="badge badge-warning">Pending</span>
+                  <span *ngIf="!todo.status" class="badge badge-warning"
+                    >Pending</span
+                  >
+                  <span *ngIf="todo.status" class="badge badge-success"
+                    >Active</span
+                  >
                 </div>
               </div>
               <div class="card-footer">
                 <div class="left">
-                  <i class="fa fa-fw fa-calendar"></i> {{ todo.deadline }}
+                  <i class="fa fa-fw fa-calendar"></i>
+                  {{ todo.deadline | date : "dd-MM-yyyy" }}
                 </div>
                 <div class="right">
-                  <button type="button" class="btn btn-danger">
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="deleteTodo(todo.id)"
+                  >
                     <i class="fa fa-fw fa-trash"></i> Delete
                   </button>
                   <button
@@ -152,9 +163,9 @@
             </div>
 
             <div class="form-group">
-              <label for="deadline">Deadline<span class="rq">*</span>:</label>
+              <label for="deadline">Deadline:</label>
               <input
-                type="text"
+                type="date"
                 class="form-control"
                 id="deadline"
                 name="deadline"
@@ -222,11 +233,9 @@
             </div>
 
             <div class="form-group">
-              <label for="editDeadline"
-                >Deadline<span class="rq">*</span>:</label
-              >
+              <label for="editDeadline">Deadline:</label>
               <input
-                type="text"
+                type="date"
                 class="form-control"
                 id="editDeadline"
                 name="deadline"
@@ -250,6 +259,7 @@
               type="button"
               class="btn btn-secondary"
               data-dismiss="modal"
+              (click)="fetchTodos()"
             >
               Close
             </button>

@@ -26,7 +26,7 @@ public class Todo {
     private Date deadline;
 
     @Transient
-    private String status;
+    private boolean status = true;
 
     @ManyToOne
     @JsonBackReference
