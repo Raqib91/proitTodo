@@ -12,12 +12,12 @@ public class ResourceNotModifiedException extends RuntimeException {
     private String operation;
     private String resourceName;
     private String fieldName;
-    private long fieldValue;
+    private Object fieldValue;
 
     public ResourceNotModifiedException(String operation,
                                         String resourceName,
                                         String fieldName,
-                                        long fieldValue) {
+                                        Object fieldValue) {
         super(fieldName == null ?
                 String.format("COULD NOT %s %s", operation, resourceName) :
                 String.format("COULD NOT %s %s WITH %s: %s", operation, resourceName, fieldName, fieldValue));

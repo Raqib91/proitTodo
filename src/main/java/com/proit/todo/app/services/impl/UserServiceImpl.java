@@ -5,7 +5,6 @@ import com.proit.todo.app.exceptions.UserNotAuthenticatedException;
 import com.proit.todo.app.exceptions.UserNotAuthorizedException;
 import com.proit.todo.app.models.UserDTO;
 import com.proit.todo.app.repositories.UserRepository;
-import com.proit.todo.app.security.JwtUtil;
 import com.proit.todo.app.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
     @Override
     public User create(UserDTO userDTO) {
@@ -36,27 +34,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void modify(User user) {
-        userRepository.save(user);
+    public User modify(String username, UserDTO userDTO) {
+        User user = getByUserName(username);
+        if (!user.getUsername().equals(userDTO.getUsername()))
+            throw new UserNotAuthorizedException();
+
+        user.setFirstname(userDTO.getFirstname());
+        user.setLastname(userDTO.getLastname());
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty())
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        return userRepository.save(user);
     }
 
     @Override
     public User getByUserName(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    @Override
-    public User getUserByToken(String token) {
-        User user = getByUserName(getUserNameByToken(token));
+        User user = userRepository.findByUsername(username);
         if (user == null)
             throw new UserNotAuthenticatedException();
         return user;
-    }
-
-    private String getUserNameByToken(String token) {
-        String username = jwtUtil.extractUsername(token);
-        if (username == null)
-            throw new UserNotAuthorizedException();
-        return username;
     }
 }

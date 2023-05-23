@@ -5,6 +5,8 @@ import { Todo } from 'src/app/models/todo';
 import { HomeService } from 'src/app/services/home.service';
 import { LoginService } from 'src/app/services/login.service';
 import { Router } from '@angular/router';
+import { User } from 'src/app/models/user';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-home',
@@ -17,10 +19,13 @@ export class HomeComponent {
   todoList: Todo[] = [];
   noTodo: boolean = false;
 
+  user: User = new User();
+
   constructor(
     private formBuilder: FormBuilder,
     private homeService: HomeService,
     private loginService: LoginService,
+    private userService: UserService,
     private router: Router
   ) {}
 
@@ -93,7 +98,7 @@ export class HomeComponent {
     }
   }
 
-  fetchTodos() {
+  fetchTodos() {  
     if (!this.loginService.checkForLogout()) {
       this.clearForm();
       this.homeService.getTodos().subscribe(
@@ -161,6 +166,42 @@ export class HomeComponent {
         }
       );
     }
+  }
+
+  fetchUserByUsername() {
+    this.userService.getUserByUsername(this.loginService.getUserName()).subscribe(
+      (response: any) => {
+        this.user.firstname = response.firstname;
+        this.user.lastname = response.lastname;
+        this.user.username = response.username;
+      },
+      (error) => {
+        if (error.status === 401 || error.status === 403) {
+          alert('User not authorized');
+          this.loginService.logout();
+        } else {
+          alert('Backend server is offline');
+        }
+      }
+    );
+  }
+
+  onUserFormSubmit() {    
+    this.userService.updateUser(this.user).subscribe(
+      (response: any) => {
+        alert('User updated successfully');
+      },
+      (error) => {
+        if (error.status === 500) {
+          alert('Could not modify user');
+        } else if (error.status === 401 || error.status === 403) {
+          alert('User not authorized');
+          this.loginService.logout();
+        } else {
+          alert('Backend server is offline');
+        }
+      }
+    );
   }
 
   clearForm() {

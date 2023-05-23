@@ -9,9 +9,7 @@ import com.proit.todo.app.models.UserDTO;
 public interface UserService {
     User create(UserDTO userDTO);
 
-    void modify(User user);
+    User modify(String username, UserDTO userDTO);
 
     User getByUserName(String username);
-
-    User getUserByToken(String token);
 }

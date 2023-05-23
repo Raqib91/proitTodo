@@ -27,7 +27,7 @@ export class LoginComponent {
       this.loginService.generateToken(this.credentials).subscribe(
         (response: any) => {
           console.log(response);
-          this.loginService.loginUser(response.token);
+          this.loginService.loginUser(response.token, this.credentials.username);
           this.router.navigate(['home']);
         },
         (error) => {

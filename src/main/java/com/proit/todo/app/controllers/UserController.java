@@ -3,6 +3,7 @@ package com.proit.todo.app.controllers;
 import com.proit.todo.app.entities.User;
 import com.proit.todo.app.exceptions.ResourceNotModifiedException;
 import com.proit.todo.app.exceptions.UserNotAuthenticatedException;
+import com.proit.todo.app.exceptions.UserNotAuthorizedException;
 import com.proit.todo.app.models.JwtRequest;
 import com.proit.todo.app.models.JwtResponse;
 import com.proit.todo.app.models.UserDTO;
@@ -21,6 +22,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 /**
  * @author raqib91
  */
@@ -35,7 +38,7 @@ public class UserController {
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping(path = "/register")
+    @PostMapping(path = "/public/register")
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
         User user = userService.create(userDTO);
         if (user == null)
@@ -43,7 +46,24 @@ public class UserController {
         return new ResponseEntity<>(ApiResponseUtil.buildResponse("USER CREATED", true), HttpStatus.CREATED);
     }
 
-    @PostMapping(path = "/login")
+    @GetMapping(path = "/{username}")
+    public ResponseEntity<User> getUser(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getByUserName(username));
+    }
+
+    @PutMapping
+    public ResponseEntity<?> modifyUser(@RequestBody UserDTO userDTO, Principal principal) {
+        log.info("User " + userDTO);
+        String username = principal.getName();
+        if (username == null)
+            throw new UserNotAuthorizedException();
+        User user = userService.modify(username, userDTO);
+        if (user == null)
+            throw new ResourceNotModifiedException(OperationType.MODIFY.name(), ResourceType.USER.name(), "USERNAME", username);
+        return new ResponseEntity<>(ApiResponseUtil.buildResponse("USER MODIFIED WITH USERNAME: " + username, true), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/public/login")
     public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) {
         try {
             authenticationManager

@@ -10,6 +10,6 @@ export class RegisterService {
   constructor(private http: HttpClient) {}
 
   registerUser(credentials: any) {
-    return this.http.post(`${this.url}/users/register`, credentials);
+    return this.http.post(`${this.url}/users/public/register`, credentials);
   }
 }

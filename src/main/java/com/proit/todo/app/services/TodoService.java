@@ -9,13 +9,13 @@ import java.util.List;
  * @author raqib91
  */
 public interface TodoService {
-    Todo create(String token, TodoDTO todoDTO);
+    Todo create(String username, TodoDTO todoDTO);
 
-    Todo modify(String token, TodoDTO todoDTO);
+    Todo modify(String username, TodoDTO todoDTO);
 
-    Todo getById(String token, long id);
+    Todo getById(String username, long id);
 
-    List<Todo> getAllByToken(String token);
+    List<Todo> getAllByUser(String username);
 
-    void delete(String token, long id);
+    void delete(String username, long id);
 }

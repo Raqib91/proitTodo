@@ -28,8 +28,8 @@ public class TodoServiceImpl implements TodoService {
     private final UserService userService;
 
     @Override
-    public Todo create(String token, TodoDTO todoDTO) {
-        User user = userService.getUserByToken(token);
+    public Todo create(String username, TodoDTO todoDTO) {
+        User user = userService.getByUserName(username);
         if (user.getTodoList() == null)
             user.setTodoList(new ArrayList<>());
 
@@ -46,12 +46,12 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public Todo modify(String token, TodoDTO todoDTO) {
-        User user = userService.getUserByToken(token);
+    public Todo modify(String username, TodoDTO todoDTO) {
+        User user = userService.getByUserName(username);
         if (user.getTodoList() == null || user.getTodoList().isEmpty())
             return null;
 
-        Todo todo = getById(token, todoDTO.getId());
+        Todo todo = getById(username, todoDTO.getId());
         if (todo == null)
             return null;
         todo.setTitle(todoDTO.getTitle());
@@ -62,8 +62,8 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public Todo getById(String token, long id) {
-        User user = userService.getUserByToken(token);
+    public Todo getById(String username, long id) {
+        User user = userService.getByUserName(username);
         if (user.getTodoList() == null || user.getTodoList().isEmpty())
             throw new ResourceNotFoundException(ResourceType.TODO.name(), "ID", id);
 
@@ -74,9 +74,9 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public List<Todo> getAllByToken(String token) {
+    public List<Todo> getAllByUser(String username) {
         Date today = new Date();
-        List<Todo> todoList = userService.getUserByToken(token).getTodoList();
+        List<Todo> todoList = userService.getByUserName(username).getTodoList();
         if (todoList != null && !todoList.isEmpty()) {
             for (int i = 0; i < todoList.size(); i++) {
                 try {
@@ -93,8 +93,8 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public void delete(String token, long id) {
-        Todo todo = getById(token, id);
+    public void delete(String username, long id) {
+        Todo todo = getById(username, id);
         if (todo == null)
             throw new ResourceNotModifiedException(OperationType.DELETE.name(), ResourceType.TODO.name(), null, 0L);
         todoRepository.deleteById(id);

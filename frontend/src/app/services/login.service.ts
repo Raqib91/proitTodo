@@ -12,11 +12,12 @@ export class LoginService {
   constructor(private http: HttpClient, private router: Router) {}
 
   generateToken(credentials: any) {
-    return this.http.post(`${this.url}/users/login`, credentials);
+    return this.http.post(`${this.url}/users/public/login`, credentials);
   }
 
-  loginUser(token: string) {
+  loginUser(token: string, username: string) {
     localStorage.setItem('token', token);
+    localStorage.setItem('user', username);
     this.loginTime = new Date();
     return true;
   }
@@ -32,6 +33,7 @@ export class LoginService {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     this.router.navigate(['login']);
     return true;
   }
@@ -47,5 +49,9 @@ export class LoginService {
       return true;
     }
     return false;
+  }
+
+  getUserName(): any {
+    return localStorage.getItem('user');
   }
 }
